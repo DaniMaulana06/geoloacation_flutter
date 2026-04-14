@@ -5,7 +5,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
+import 'package:printing/printing.dart';
 import '../../domain/entities/todo.dart';
+import 'package:file_saver/file_saver.dart';
 
 class PdfService {
   Future<void> generatePdf(List<Todo> todos) async {
@@ -93,39 +95,23 @@ class PdfService {
         ),
       );
 
-      final bytes = await pdf.save();
+      final pdfBytes = await pdf.save();
+      try {
+        final path = await FileSaver.instance.saveFile(
+          name: 'todo_${DateTime.now().millisecondsSinceEpoch}',
+          bytes: pdfBytes,
+          fileExtension: 'pdf',
+          mimeType: MimeType.pdf,
+        );
+        
+        await Printing.sharePdf(bytes: pdfBytes, filename: 'todo.pdf');
 
-      var status = await Permission.storage.request();
+        await OpenFilex.open(path);
 
-      if (!status.isGranted) {
-        print("Permission Ditolak");
-        return;
+        print("File tersimpan di: $path");
+      } catch (e) {
+        print("ERROR SAVE FILE: $e");
       }
-
-      late Directory? dir;
-      if (Platform.isAndroid) {
-        dir = Directory('/storage/emulated/0/Download');
-      } else {
-        dir = await getApplicationCacheDirectory();
-      }
-
-      final file = File(
-        '${dir.path}/todo_${DateTime.now().millisecondsSinceEpoch}.pdf',
-      );
-
-      await file.writeAsBytes(bytes);
-      // ignore: avoid_print
-      print("PDF Tersimpan di: ${file.path}");
-
-      final result = await OpenFilex.open(file.path);
-      // ignore: avoid_print
-      print("Open result: , ${result.message}");
-
-      // await Printing.sharePdf(
-      //   bytes: bytes,
-      //   filename: 'todo_${DateTime.now().millisecondsSinceEpoch}.pdf',
-      // ); // share pdf
-
       print("PDF berhasil dibuat");
     } catch (e, stack) {
       print("ERROR PDF: $e");
@@ -133,7 +119,6 @@ class PdfService {
     }
   }
 
-  // 🔥 HEADER CELL STYLE
   pw.Widget _cellHeader(String text) {
     return pw.Padding(
       padding: const pw.EdgeInsets.all(6),

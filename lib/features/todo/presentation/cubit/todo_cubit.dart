@@ -62,10 +62,9 @@ class TodoCubit extends Cubit<TodoState> {
       } catch (e) {
         emit(TodoError(message: _friendlyError(e)));
       }
-    } catch (e) {
-      print("DEBUG ERROR SUPABASE: $e");
-
-      // Kirim pesan error ke UI agar muncul di SnackBar
+    } catch (e, stack) {
+      print("CUBIT ERROR: $e");
+      print("STACK: $stack");
       emit(TodoError(message: "Gagal menyimpan: ${e.toString()}"));
     }
   }

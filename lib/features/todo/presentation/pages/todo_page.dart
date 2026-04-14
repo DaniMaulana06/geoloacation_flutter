@@ -18,7 +18,7 @@ class _TodoPageState extends State<TodoPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Dani Belajar", style: TextStyle(color: Colors.white)),
+        title: Text("Survei", style: TextStyle(color: Colors.white)),
         backgroundColor: Color.fromARGB(255, 41, 58, 114),
       ),
       floatingActionButton: Row(
@@ -36,6 +36,7 @@ class _TodoPageState extends State<TodoPage> {
               );
             },
             backgroundColor: const Color.fromARGB(255, 41, 58, 114),
+            heroTag: 'add_todo',
             foregroundColor: Colors.white,
             child: const Icon(Icons.add),
           ),
@@ -44,6 +45,7 @@ class _TodoPageState extends State<TodoPage> {
             onPressed: () => context.read<TodoCubit>().exportTodos(),
             backgroundColor: const Color.fromARGB(255, 190, 4, 4),
             foregroundColor: Colors.white,
+            heroTag: 'export_pdf',
             child: const Icon(Icons.picture_as_pdf),
           )
         ],

@@ -82,13 +82,22 @@ class _AddPageState extends State<AddPage> {
 
   Future<void> _submit() async {
     try {
+      print('Mulai Submit');
+
       final title = titleController.text.trim();
       if (title.isEmpty) return;
 
       Uint8List? signatureBytes;
-      if (signatureController.isNotEmpty) {
-        signatureBytes = await signatureController.toPngBytes();
+      try {
+        if (signatureController.isNotEmpty) {
+          print('Convert Signature');
+          signatureBytes = await signatureController.toPngBytes();
+        }
+      } catch (e) {
+        print("ERROR SIGNATURE: $e");
       }
+
+      print("BUAT TODO");
 
       final todo = Todo(
         id: DateTime.now().millisecondsSinceEpoch,
@@ -98,11 +107,15 @@ class _AddPageState extends State<AddPage> {
         longitude: _longitude,
       );
 
-      if (!mounted) return;
+      print("KIRIM KE CUBIT");
 
+      if (!mounted) return;
       context.read<TodoCubit>().addTodo(todo, signatureBytes: signatureBytes);
-    } catch (e) {
+
+      print("Selesai submit");
+    } catch (e, stack) {
       print("LOG UI ERROR: $e");
+      print("STACK: $stack");
     }
   }
 
@@ -264,15 +277,29 @@ class _AddPageState extends State<AddPage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                ElevatedButton.icon(
-                  onPressed: _submit,
-                  icon: const Icon(Icons.save),
-                  label: const Text('Simpan'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 41, 58, 114),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                  ),
+                BlocBuilder<TodoCubit, TodoState>(
+                  builder: (context, state) {
+                    final isLoading = state is TodoLoading;
+                    return ElevatedButton.icon(
+                      onPressed: isLoading ? null : _submit,
+                      icon: isLoading
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : const Icon(Icons.save),
+                      label: Text(isLoading ? 'Meyimpan...' : 'Simpan'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(255, 41, 58, 114),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
