@@ -51,7 +51,7 @@ class PdfService {
 
           return [
             todo.title ?? '-',
-            todo.createdAt?.toString() ?? '-',
+            todo.createdAt.toString() ?? '-',
             imageWidget,
           ];
         }),

@@ -10,7 +10,7 @@ class TodoRemoteDatasource {
 
   Future<List<TodoModel>> getTodos() async {
     final response = await client.from('todos').select().order('id', ascending: false);
-    if (response is List && response.isNotEmpty) {
+    if (response.isNotEmpty) {
       print('=== DEBUG API RESPONSE FIRST ITEM: ${response.first} ===');
     }
     return (response as List).map((e) => TodoModel.fromJson(e)).toList();

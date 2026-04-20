@@ -3,8 +3,7 @@ import 'package:crud_app/features/todo/data/repositories/todo_repository_impl.da
 import 'package:crud_app/features/todo/data/services/pdf_services.dart';
 import 'package:crud_app/features/todo/domain/usecases/export_pdf.dart';
 import 'package:crud_app/features/todo/presentation/cubit/todo_cubit.dart';
-import 'package:crud_app/features/todo/presentation/pages/todo_page.dart'
-    show TodoPage;
+import 'package:crud_app/features/todo/presentation/pages/todo_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -32,7 +31,7 @@ class MyApp extends StatelessWidget {
   final TodoRepositoryImpl repository;
   final ExportPdf exportPdf;
 
-  MyApp(this.repository, this.exportPdf);
+  const MyApp(this.repository, this.exportPdf, {super.key});
 
   @override
   Widget build(BuildContext context) {

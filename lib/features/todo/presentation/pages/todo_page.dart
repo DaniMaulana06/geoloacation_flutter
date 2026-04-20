@@ -8,6 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class TodoPage extends StatefulWidget {
+  const TodoPage({super.key});
+
   @override
   _TodoPageState createState() => _TodoPageState();
 }
@@ -158,8 +160,9 @@ class _TodoPageState extends State<TodoPage> {
                                       fit: BoxFit.contain,
                                       loadingBuilder:
                                           (context, child, loadingProgress) {
-                                            if (loadingProgress == null)
+                                            if (loadingProgress == null) {
                                               return child;
+                                            }
                                             return const SizedBox(
                                               height: 60,
                                               child: Center(
